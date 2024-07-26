@@ -123,13 +123,6 @@ class Server:
         await response.write(self.__html_start)
         while not self.__shutdown.done():
             # Send a flood chunk
-            """
-            data = ''.join(
-                random.choice(
-                    self.RANDOM_OPTIONS) for _ in range(self.FLOOD_CHUNK_SIZE * 1024)
-            )
-            data = data.encode("utf-8")
-            """
             data = os.urandom(self.__flood_size)
             await response.write(data)
             """

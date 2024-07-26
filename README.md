@@ -19,7 +19,7 @@ It also masquerades as a variety of servers, because that might be useful.
 |    x86-64    |     ✅     | latest |
 |   arm64v8    |     ✅     | latest |
 |   arm32v7    |     ✅     | latest |
-|   arm32v6    |     ❌     | latest |
+|   arm32v6    |     ✅     | latest |
 |     i386     |     ✅     | latest |
 
 ## Setup
@@ -29,7 +29,7 @@ You have the choice of the following modes:
 - `mist` mist a byte every 5 to 10 seconds. 
 - `drip` drips 128 B response chunks every second.
 - `trickle` trickles 1 kiB response chunks every half-second.
-- `flood` sends 1024 kiB response chunks as fast as possible, but with a 1ms delay for accepting other connections. 
+- `flood` sends 1024 kiB response chunks as fast as possible, but with a 0.1ms delay for accepting other connections. 
 - `random` randomly chooses from the above options.
 
 ### Docker run
