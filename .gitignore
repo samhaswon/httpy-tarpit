@@ -1,0 +1,9 @@
+.idea
+.venv
+alive.txt
+.vscode
+*.pyc
+__pycache__/
+.dockerignore
+Dockerfile
+LICENSE
