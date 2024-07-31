@@ -52,5 +52,5 @@ services:
       - "8080:8080"
     environment:
       - TZ=America/New_York  # your linux timezone
-      - MODE:random
+      - MODE=random
 ```
