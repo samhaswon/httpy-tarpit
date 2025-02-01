@@ -5,5 +5,4 @@ alive.txt
 *.pyc
 __pycache__/
 .dockerignore
-Dockerfile
 LICENSE
