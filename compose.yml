@@ -1,0 +1,10 @@
+services:
+  httpy-tarpit:
+    image: httpy-tarpit
+    container_name: httpy-tarpit
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=America/New_York  # your linux timezone
+      - MODE:flood
