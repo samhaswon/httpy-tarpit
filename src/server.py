@@ -11,13 +11,13 @@ from src.util import *
 
 
 class Server:
-    SHUTDOWN_TIMEOUT = 5
+    SHUTDOWN_TIMEOUT = 5.0
     # Flood chunk size (in kB)
     FLOOD_CHUNK_SIZE = 1024
     MODES = ["mist", "drip", "flood", "trickle"]
     RANDOM_OPTIONS = [str(x) for x in string.ascii_uppercase + string.digits]
 
-    def __init__(self, address: str = "0.0.0.0", port: int = 8080, mode: str = "flood", loop = None):
+    def __init__(self, address: str = "0.0.0.0", port: int = 8080, mode: str = "flood", loop=None):
         """
         :param address: Address to bind the server to.
         :param port: Port to bind the server to.
@@ -55,9 +55,12 @@ class Server:
                       "type=\"text/javascript\">window.location=\"data:text/html;base64,")
         self.__html_start = html_start.encode("utf-8")
 
-    async def handler(self, request) -> web.StreamResponse:
+    async def handler(self, request) -> Union[web.StreamResponse, web.Response]:
         start = time.time()
         peer_addr = request.transport.get_extra_info('peername')
+        if request.version.major == 1 and request.version.minor == 0:
+            log(f"Received HTTP 1.0 request from {peer_addr}. Sending some junk.")
+            return web.Response(body=os.urandom(self.__flood_size), status=418)
         if not peer_addr:
             peer_addr = "invalid client"
         log(f"Connected to {peer_addr}")
@@ -77,7 +80,7 @@ class Server:
         except ConnectionError or ConnectionAbortedError:
             ...
         except Exception as e:
-            log(f"Encountered exception {e}")
+            log(f"Encountered exception: {type(e)} {e}")
         finally:
             end = time.time()
             log(f"Kept client {peer_addr} busy with {mode} for {time_format(start, end)}")
@@ -91,7 +94,7 @@ class Server:
         while not self.__shutdown.done():
             # Send a drip chunk
             data = random.choice(
-                    string.ascii_uppercase + string.digits
+                string.ascii_uppercase + string.digits
             )
             data = data.encode("utf-8")
             await response.write(data)
@@ -176,7 +179,7 @@ class Server:
         self.__runner = web.ServerRunner(self.__server)
         await self.__runner.setup()
         self.__site = web.TCPSite(self.__runner, self.__address, self.__port,
-                                  ssl_context=None,
-                                  shutdown_timeout=self.SHUTDOWN_TIMEOUT)
+                                  ssl_context=None, shutdown_timeout=self.SHUTDOWN_TIMEOUT
+                                  )
         await self.__site.start()
         log(f"Server listening at http://{self.__address}:{self.__port}")
